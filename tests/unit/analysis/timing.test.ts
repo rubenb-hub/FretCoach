@@ -26,7 +26,7 @@ describe("timing consistency scoring", () => {
   it("scores a click track with gradual drift lower than a steady one", () => {
     const duration = 24;
     const steady = generateClickTrack({ bpm: 100, durationSeconds: duration });
-    const drifting = generateClickTrack({ bpm: 100, durationSeconds: duration, driftPerSecond: 2.5 });
+    const drifting = generateClickTrack({ bpm: 100, durationSeconds: duration, driftPerSecond: 1.5 });
 
     const steadyResult = runPipeline(steady, duration);
     const driftingResult = runPipeline(drifting, duration);

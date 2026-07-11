@@ -10,6 +10,7 @@ import { CoachingPanel } from "./CoachingPanel";
 import { SongInfoEditor } from "./SongInfoEditor";
 import { NotesEditor } from "./NotesEditor";
 import { DevPanel } from "./DevPanel";
+import { MusicAnalysisPanel } from "@/components/issues/MusicAnalysisPanel";
 import { IntentionPicker } from "@/components/recording/IntentionPicker";
 import { formatDate, formatDuration } from "@/lib/utils/format";
 import type { PracticeSession } from "@/lib/types";
@@ -83,6 +84,10 @@ export function SessionResultView({
 
       {session.analysis && <ScoreSummary analysis={session.analysis} />}
       {session.coaching && <CoachingPanel coaching={session.coaching} />}
+
+      {session.audioBlob && (
+        <MusicAnalysisPanel session={session} onMusicAnalysisComputed={(musicAnalysis) => onChange({ musicAnalysis })} />
+      )}
 
       <SongInfoEditor song={session.song} onChange={(song) => onChange({ song })} />
 

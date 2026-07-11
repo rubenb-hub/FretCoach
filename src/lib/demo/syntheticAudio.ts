@@ -24,18 +24,26 @@ function addClick(
   for (let i = 0; i < lengthSamples; i++) {
     const idx = startSample + i;
     if (idx < 0 || idx >= buffer.length) continue;
-    const decay = Math.exp(-i / (lengthSamples * 0.35));
-    // Mix a couple of guitar-ish partials plus noise burst to give the
-    // spectral-flux detector something broadband to latch onto.
+    // Two separate envelopes: a brief broadband noise burst for the
+    // spectral-flux onset detector to latch onto (real pick/strum attacks
+    // are noisy for only the first few milliseconds), and a slower
+    // harmonic decay for the sustain — this keeps the sustained portion
+    // dominated by stable harmonic content, which the pitch/chord
+    // detectors (added after the original timing/dynamics engine) need to
+    // see something resembling a real held note rather than continuous
+    // noise.
+    const sustainDecay = Math.exp(-i / (lengthSamples * 0.35));
+    const attackNoiseDecay = Math.exp(-i / (sampleRate * 0.005));
     const t = i / sampleRate;
     // Weights sum to 0.9 even in the (rare) worst-case where every term
     // peaks simultaneously, leaving headroom below the clipping threshold
     // for every scenario except the dedicated clipped-signal generator.
-    const tone =
-      Math.sin(2 * Math.PI * 220 * t) * 0.45 +
-      Math.sin(2 * Math.PI * 440 * t) * 0.2 +
-      (Math.random() * 2 - 1) * 0.25;
-    buffer[idx] += tone * decay * amplitude;
+    const harmonicTone =
+      Math.sin(2 * Math.PI * 220 * t) * 0.4 +
+      Math.sin(2 * Math.PI * 440 * t) * 0.18 +
+      Math.sin(2 * Math.PI * 660 * t) * 0.1;
+    const attackNoise = (Math.random() * 2 - 1) * 0.22;
+    buffer[idx] += (harmonicTone * sustainDecay + attackNoise * attackNoiseDecay) * amplitude;
   }
 }
 
