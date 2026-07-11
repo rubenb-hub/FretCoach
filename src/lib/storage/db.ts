@@ -4,6 +4,11 @@ import type {
   CoachingResult,
   PracticeIntention,
   SongInfo,
+  PracticeMode,
+  ReferenceMaterial,
+  SpotifyReference,
+  MusicAnalysisResult,
+  UserDetectionFeedback,
 } from "@/lib/types";
 
 /**
@@ -25,10 +30,22 @@ export interface PracticeSessionRow {
   analysis: PracticeAnalysis | null;
   coaching: CoachingResult | null;
   isDemo: boolean;
+  practiceMode?: PracticeMode;
+  referenceMaterial?: ReferenceMaterial | null;
+  spotifyReference?: SpotifyReference | null;
+  musicAnalysis?: MusicAnalysisResult | null;
+  retryOfSessionId?: string | null;
+  retryOfIssueId?: string | null;
 }
+
+/** issueId is the primary key: feedback is a per-issue toggle ("yes" /
+ * "no" / "unsure"), not an append-only log, so a new response for the
+ * same issue simply replaces the old one. */
+export type FeedbackRow = UserDetectionFeedback;
 
 class FretCoachDatabase extends Dexie {
   sessions!: Table<PracticeSessionRow, string>;
+  feedback!: Table<FeedbackRow, string>;
 
   constructor() {
     super("fretcoach");
@@ -36,6 +53,10 @@ class FretCoachDatabase extends Dexie {
       // id is the primary key; createdAt/intention/isDemo are indexed for
       // history filtering and progress aggregation.
       sessions: "id, createdAt, intention, isDemo",
+    });
+    this.version(2).stores({
+      sessions: "id, createdAt, intention, isDemo",
+      feedback: "issueId, createdAt",
     });
   }
 }
