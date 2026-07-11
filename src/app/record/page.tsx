@@ -11,6 +11,8 @@ import { RecordingErrorPanel } from "@/components/recording/RecordingErrorPanel"
 import { ProcessingView } from "@/components/processing/ProcessingView";
 import { SessionResultView } from "@/components/result/SessionResultView";
 import { SongInfoEditor } from "@/components/result/SongInfoEditor";
+import { PracticeModeToggle } from "@/components/reference/PracticeModeToggle";
+import { ReferenceMaterialEditor } from "@/components/reference/ReferenceMaterialEditor";
 import { MediaRecorderAudioService } from "@/lib/recording/audioRecorderService";
 import { LiveInputMeter } from "@/lib/recording/liveInputMeter";
 import { RecordingError } from "@/lib/recording/errors";
@@ -20,7 +22,7 @@ import { RuleBasedPracticeCoachProvider } from "@/lib/coaching/ruleBasedCoachPro
 import { getSessionRepository } from "@/lib/storage/sessionRepository";
 import { useProfile } from "@/lib/state/ProfileProvider";
 import { formatDuration } from "@/lib/utils/format";
-import type { PracticeIntention, PracticeSession, SongInfo } from "@/lib/types";
+import type { PracticeIntention, PracticeMode, PracticeSession, ReferenceMaterial, SongInfo } from "@/lib/types";
 
 type Phase = "setup" | "starting" | "recording" | "paused" | "processing" | "result" | "error";
 
@@ -34,6 +36,8 @@ export default function RecordPage() {
   const [title, setTitle] = useState("");
   const [intention, setIntention] = useState<PracticeIntention | null>(null);
   const [song, setSong] = useState<SongInfo | null>(null);
+  const [practiceMode, setPracticeMode] = useState<PracticeMode>("free");
+  const [referenceMaterial, setReferenceMaterial] = useState<ReferenceMaterial | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [error, setError] = useState<RecordingError | { message: string; kind: "unknown" } | null>(null);
   const [analysisStage, setAnalysisStage] = useState<AnalysisStage | "complete" | null>(null);
@@ -161,6 +165,8 @@ export default function RecordPage() {
         analysis,
         coaching,
         isDemo: false,
+        practiceMode,
+        referenceMaterial,
       };
       setResultSession(session);
       setPhase("result");
@@ -248,6 +254,17 @@ export default function RecordPage() {
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">What&apos;s your focus?</p>
           <IntentionPicker value={intention} onChange={setIntention} />
         </div>
+
+        <div className="mt-5">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-foreground-muted">Practice mode</p>
+          <PracticeModeToggle value={practiceMode} onChange={setPracticeMode} />
+        </div>
+
+        {practiceMode === "reference" && (
+          <div className="mt-5">
+            <ReferenceMaterialEditor material={referenceMaterial} onChange={setReferenceMaterial} />
+          </div>
+        )}
 
         <div className="mt-5">
           <SongInfoEditor song={song} onChange={setSong} />

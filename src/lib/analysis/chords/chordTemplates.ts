@@ -43,7 +43,7 @@ export const CHORD_QUALITY_LABELS: Record<ChordQuality, string> = {
   sus4: "sus4",
 };
 
-const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+export const NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 export interface ChordTemplate {
   name: string;
@@ -61,7 +61,10 @@ function rotateVector(intervals: number[], root: number): number[] {
   return vector;
 }
 
-function chordName(root: number, quality: ChordQuality): string {
+/** Same naming convention used by the chord-detection templates, also
+ * reused by the reference-material chord-shorthand parser so a
+ * user-typed "Em" and a detected "E minor" chord are directly comparable. */
+export function chordName(root: number, quality: ChordQuality): string {
   const rootName = NOTE_NAMES[root];
   if (quality === "major") return `${rootName} major`;
   if (quality === "minor") return `${rootName} minor`;

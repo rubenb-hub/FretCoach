@@ -11,6 +11,9 @@ import { SongInfoEditor } from "./SongInfoEditor";
 import { NotesEditor } from "./NotesEditor";
 import { DevPanel } from "./DevPanel";
 import { MusicAnalysisPanel } from "@/components/issues/MusicAnalysisPanel";
+import { PracticeModeToggle } from "@/components/reference/PracticeModeToggle";
+import { ReferenceMaterialEditor } from "@/components/reference/ReferenceMaterialEditor";
+import { ReferenceComparisonPanel } from "@/components/reference/ReferenceComparisonPanel";
 import { IntentionPicker } from "@/components/recording/IntentionPicker";
 import { formatDate, formatDuration } from "@/lib/utils/format";
 import type { PracticeSession } from "@/lib/types";
@@ -87,6 +90,22 @@ export function SessionResultView({
 
       {session.audioBlob && (
         <MusicAnalysisPanel session={session} onMusicAnalysisComputed={(musicAnalysis) => onChange({ musicAnalysis })} />
+      )}
+
+      <Card className="flex flex-col gap-3">
+        <h3 className="text-sm font-semibold">Practice mode</h3>
+        <PracticeModeToggle value={session.practiceMode ?? "free"} onChange={(practiceMode) => onChange({ practiceMode })} />
+      </Card>
+
+      {(session.practiceMode ?? "free") === "reference" && (
+        <ReferenceMaterialEditor
+          material={session.referenceMaterial ?? null}
+          onChange={(referenceMaterial) => onChange({ referenceMaterial })}
+        />
+      )}
+
+      {session.practiceMode === "reference" && session.referenceMaterial && session.musicAnalysis && (
+        <ReferenceComparisonPanel material={session.referenceMaterial} analysis={session.musicAnalysis} />
       )}
 
       <SongInfoEditor song={session.song} onChange={(song) => onChange({ song })} />
