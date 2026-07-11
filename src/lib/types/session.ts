@@ -1,5 +1,8 @@
 import type { PracticeAnalysis } from "./analysis";
 import type { CoachingResult } from "./coaching";
+import type { MusicAnalysisResult } from "./musicAnalysis";
+import type { ReferenceMaterial } from "./referenceMaterial";
+import type { SpotifyReference } from "./spotifyReference";
 
 export type PracticeIntention =
   | "timing"
@@ -30,6 +33,15 @@ export interface SongInfo {
 
 export type RecordingQualitySetting = "standard" | "high";
 
+/**
+ * Free Practice: the app has no expected musical reference and only
+ * describes what it measured ("likely note", "possible chord").
+ * Reference Practice: the user has manually supplied expected material
+ * (see ReferenceMaterial) that detected playing can be compared against,
+ * still only ever approximately.
+ */
+export type PracticeMode = "free" | "reference";
+
 export interface PracticeSession {
   id: string;
   title: string;
@@ -45,6 +57,18 @@ export interface PracticeSession {
   analysis: PracticeAnalysis | null;
   coaching: CoachingResult | null;
   isDemo: boolean;
+
+  /** Defaults to "free" for sessions created before this field existed. */
+  practiceMode?: PracticeMode;
+  referenceMaterial?: ReferenceMaterial | null;
+  spotifyReference?: SpotifyReference | null;
+  /** Note/chord/issue-level analysis (separate, heavier pass — see MusicAnalysisResult). */
+  musicAnalysis?: MusicAnalysisResult | null;
+  /** If this session was recorded as a retry of a specific practice issue,
+   * the id of the session it was retried from, for RetryComparisonService. */
+  retryOfSessionId?: string | null;
+  /** The specific issue id (within the original session) this retry targets. */
+  retryOfIssueId?: string | null;
 }
 
 export interface UserPracticeProfile {

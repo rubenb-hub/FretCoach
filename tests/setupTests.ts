@@ -10,3 +10,12 @@ import { cleanup } from "@testing-library/react";
 afterEach(() => {
   cleanup();
 });
+
+// jsdom doesn't implement real media playback; stub these so component
+// tests that render an <audio> element don't spam "not implemented"
+// warnings or throw on play()/pause() calls.
+if (typeof window !== "undefined" && window.HTMLMediaElement) {
+  window.HTMLMediaElement.prototype.play = () => Promise.resolve();
+  window.HTMLMediaElement.prototype.pause = () => {};
+}
+
