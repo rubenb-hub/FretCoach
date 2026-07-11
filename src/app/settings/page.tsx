@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { SettingRow, Toggle } from "@/components/settings/SettingRow";
 import { AudioInputTest } from "@/components/settings/AudioInputTest";
+import { MicrophoneCalibration } from "@/components/settings/MicrophoneCalibration";
 import { useProfile } from "@/lib/state/ProfileProvider";
 import { useTheme } from "@/lib/state/ThemeProvider";
 import { useSessions } from "@/lib/hooks/useSessions";
@@ -58,6 +59,12 @@ export default function SettingsPage() {
       <Card>
         <h2 className="mb-1 text-sm font-semibold uppercase tracking-wide text-foreground-muted">Audio</h2>
         <AudioInputTest />
+        <div className="mt-3 border-t border-border pt-3">
+          <p className="mb-2 text-xs text-foreground-muted">
+            Guided calibration: measures room noise and your input level, then suggests an analysis sensitivity.
+          </p>
+          <MicrophoneCalibration />
+        </div>
         <div className="mt-2 divide-y divide-border">
           <SettingRow label="Recording quality" description="Higher quality uses more storage per session.">
             <select
