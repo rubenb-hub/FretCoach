@@ -14,6 +14,7 @@ import { MusicAnalysisPanel } from "@/components/issues/MusicAnalysisPanel";
 import { PracticeModeToggle } from "@/components/reference/PracticeModeToggle";
 import { ReferenceMaterialEditor } from "@/components/reference/ReferenceMaterialEditor";
 import { ReferenceComparisonPanel } from "@/components/reference/ReferenceComparisonPanel";
+import { SpotifyReferencePanel } from "@/components/spotify/SpotifyReferencePanel";
 import { IntentionPicker } from "@/components/recording/IntentionPicker";
 import { formatDate, formatDuration } from "@/lib/utils/format";
 import type { PracticeSession } from "@/lib/types";
@@ -109,6 +110,11 @@ export function SessionResultView({
       )}
 
       <SongInfoEditor song={session.song} onChange={(song) => onChange({ song })} />
+
+      <SpotifyReferencePanel
+        reference={session.spotifyReference ?? null}
+        onChange={(spotifyReference) => onChange({ spotifyReference })}
+      />
 
       <NotesEditor value={session.notes} onChange={(notes) => onChange({ notes })} />
 

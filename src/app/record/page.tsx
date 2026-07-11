@@ -13,6 +13,7 @@ import { SessionResultView } from "@/components/result/SessionResultView";
 import { SongInfoEditor } from "@/components/result/SongInfoEditor";
 import { PracticeModeToggle } from "@/components/reference/PracticeModeToggle";
 import { ReferenceMaterialEditor } from "@/components/reference/ReferenceMaterialEditor";
+import { SpotifyReferencePanel } from "@/components/spotify/SpotifyReferencePanel";
 import { MediaRecorderAudioService } from "@/lib/recording/audioRecorderService";
 import { LiveInputMeter } from "@/lib/recording/liveInputMeter";
 import { RecordingError } from "@/lib/recording/errors";
@@ -22,7 +23,14 @@ import { RuleBasedPracticeCoachProvider } from "@/lib/coaching/ruleBasedCoachPro
 import { getSessionRepository } from "@/lib/storage/sessionRepository";
 import { useProfile } from "@/lib/state/ProfileProvider";
 import { formatDuration } from "@/lib/utils/format";
-import type { PracticeIntention, PracticeMode, PracticeSession, ReferenceMaterial, SongInfo } from "@/lib/types";
+import type {
+  PracticeIntention,
+  PracticeMode,
+  PracticeSession,
+  ReferenceMaterial,
+  SongInfo,
+  SpotifyReference,
+} from "@/lib/types";
 
 type Phase = "setup" | "starting" | "recording" | "paused" | "processing" | "result" | "error";
 
@@ -38,6 +46,7 @@ export default function RecordPage() {
   const [song, setSong] = useState<SongInfo | null>(null);
   const [practiceMode, setPracticeMode] = useState<PracticeMode>("free");
   const [referenceMaterial, setReferenceMaterial] = useState<ReferenceMaterial | null>(null);
+  const [spotifyReference, setSpotifyReference] = useState<SpotifyReference | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [error, setError] = useState<RecordingError | { message: string; kind: "unknown" } | null>(null);
   const [analysisStage, setAnalysisStage] = useState<AnalysisStage | "complete" | null>(null);
@@ -167,6 +176,7 @@ export default function RecordPage() {
         isDemo: false,
         practiceMode,
         referenceMaterial,
+        spotifyReference,
       };
       setResultSession(session);
       setPhase("result");
@@ -268,6 +278,10 @@ export default function RecordPage() {
 
         <div className="mt-5">
           <SongInfoEditor song={song} onChange={setSong} />
+        </div>
+
+        <div className="mt-5">
+          <SpotifyReferencePanel reference={spotifyReference} onChange={setSpotifyReference} />
         </div>
 
         <div className="flex-1" />
